@@ -5,8 +5,8 @@ import os
 import scipy as sp
 import math
 
-def gray2binfun(input_image) :
-	img = cv2.imread(input_image, 0)
+def gray2binfun(input_image_path) :
+	img = cv2.imread(input_image_path, 0)
 	dummy, img_threshold = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 	# img_return = Image.fromarray(img_threshold)
 	return img_threshold
@@ -37,33 +37,34 @@ def Normalisation (input_image_path):
 
 def main() :
 	lightning_conditions = ["DB1_B", "DB2_B", "DB3_B", "DB4_B"]
-	dataset_path = "/Users/suchetaaa/Desktop/Academics @IITB/Semester V/DIP/Project/Fingerprint-Recognition/FVC2002"
+	dataset_path = "/home/neharika/Desktop/DIP/Project"
 	binary_lighting = ["DB1_B_B", "DB2_B_B", "DB3_B_B", "DB4_B_B"]
 
 	for x in range(0, len(lightning_conditions)):
 		path_lighting_condition = os.path.join(dataset_path, lightning_conditions[x])
 		image_files = os.listdir(path_lighting_condition)
 
-		# binary_lighting_path = os.path.join(dataset_path, binary_lighting)
+		binary_lighting_path = os.path.join(dataset_path, binary_lighting[x])
 
 		for y in range(1,len(image_files)):
 			input_image_path = os.path.join(path_lighting_condition, image_files[y])
-			normalized_image = Normalisation(input_image_path)
-			binary_image = gray2binfun(normalized_image)
-			# image_path = os.path.join(binary_lighting_path, image_files[y])
-			# binary_image.save(image_path)
-			binary_image.show()
+			#normalized_image = Normalisation(input_image_path)
+			binary_image = gray2binfun(input_image_path)
+			binary_image = Image.fromarray(binary_image)
+			image_path = os.path.join(binary_lighting_path, image_files[y])
+			binary_image.save(image_path)
+			#binary_image.show()
 
 if __name__ == '__main__':
-	dataset_path = "/Users/suchetaaa/Desktop/Academics @IITB/Semester V/DIP/Project/Fingerprint-Recognition/FVC2002/DB3_B/104_8.tif"
-	normalized_img = Normalisation(dataset_path)
-	normalized_img.show()
-	input_image = cv2.imread(dataset_path)
-	otsu = gray2binfun(dataset_path)
-	otsu = Image.fromarray(otsu)
-	otsu.show()
+	# dataset_path = "/Users/suchetaaa/Desktop/Academics @IITB/Semester V/DIP/Project/Fingerprint-Recognition/FVC2002/DB3_B/104_8.tif"
+	# normalized_img = Normalisation(dataset_path)
+	# normalized_img.show()
+	# input_image = cv2.imread(dataset_path)
+	# otsu = gray2binfun(dataset_path)
+	# otsu = Image.fromarray(otsu)
+	# otsu.show()
 
 
-	# main()
+	main()
 
 	
