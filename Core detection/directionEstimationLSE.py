@@ -31,8 +31,8 @@ def directionEstimationLSE(I):
 	#cv2.imshow('gradient square', theta_bar)
 	#cv2.waitKey(0)
 
-	phi_x = np.cos(theta_bar)
-	phi_y = np.sin(theta_bar)
+	phi_x = np.cos(2* theta_bar)
+	phi_y = np.sin(2* theta_bar)
 
 	####Size of Window to smooth over
 	sw = 5
