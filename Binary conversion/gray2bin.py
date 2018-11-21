@@ -2,20 +2,57 @@ import numpy as np
 from PIL import Image 
 import cv2
 import os 
+import scipy as sp
+import math
 
-path = "/Users/suchetaaa/Desktop/Academics @IITB/Semester V/DIP/Project/Fingerprint-Recognition/Binary conversion/Binary"
-images = os.listdir("/Users/suchetaaa/Desktop/Academics @IITB/Semester V/DIP/Project/Fingerprint-Recognition/Binary conversion/Binary")
-print len(images)
-print images
-threshold = 128
-for x in xrange(0,len(images)):
-	print images[x]
-	img_path = os.path.join(path, images[x])
-	img = cv2.imread(img_path, 0)
-	blur = cv2.GaussianBlur(img,(3,3),0)
+def gray2binfun(input_image) :
+	img = input_image
 	dummy, img_threshold = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-	# img_arr = np.asarray(img)
-	img_show = Image.fromarray(img_threshold)
-	img_show.show()
+	img_return = Image.fromarray(img_threshold)
+	return img_return
+
+def Normalisation (input_image_path):
+	M0 = 74.98999708879379
+	V0 = 2011395.439145634
+
+	test_image = cv2.imread(input_image_path, 0)
+
+	Mean = np.mean(test_image)
+	V_i = np.var(test_image)
+
+	output_image = np.zeros(test_image.shape)
+	Size = test_image.shape
+	# print test_image.shape
+	print(output_image.shape)
+	print(test_image.shape)
+	for i,j in np.argwhere(test_image > Mean):
+		output_image[i, j] = M0 + math.sqrt(V0*math.pow((test_image[i, j]-Mean),2)/V_i)
+
+	for i,j in np.argwhere(test_image <= Mean):
+		output_image[i, j] = M0 - math.sqrt(V0*math.pow((test_image[i, j]-Mean),2)/V_i)
+
+	return output_image
+
+def main() :
+	lightning_conditions = ["DB1_B", "DB2_B", "DB3_B", "DB4_B"]
+	dataset_path = "/Users/suchetaaa/Desktop/Academics @IITB/Semester V/DIP/Project/Fingerprint-Recognition/FVC2002"
+	binary_lighting = ["DB1_B_B", "DB2_B_B", "DB3_B_B", "DB4_B_B"]
+
+	for x in range(0, len(lightning_conditions)):
+		path_lighting_condition = os.path.join(dataset_path, lightning_conditions[x])
+		image_files = os.listdir(path_lighting_condition)
+
+		# binary_lighting_path = os.path.join(dataset_path, binary_lighting)
+
+		for y in range(1,len(image_files)):
+			input_image_path = os.path.join(path_lighting_condition, image_files[y])
+			normalized_image = Normalisation(input_image_path)
+			binary_image = gray2binfun(normalized_image)
+			# image_path = os.path.join(binary_lighting_path, image_files[y])
+			# binary_image.save(image_path)
+			binary_image.show()
+
+if __name__ == '__main__':
+	main()
 
 	
