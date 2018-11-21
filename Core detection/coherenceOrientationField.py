@@ -3,15 +3,15 @@ import numpy as np
 from math import pi
 
 
-w1 = 16
+
 
 #Read the image
-I = cv2.imread("/home/neharika/Desktop/DIP/Project/dummy4.tif");
+#I = cv2.imread("/home/neharika/Desktop/DIP/Project/dummy4.tif");
 
 
 
 def coherenceOrientationField(I):
-
+	w1 = 16
 	I = cv2.cvtColor(I, cv2.COLOR_BGR2GRAY)
 	#print(I.dtype)
 	#print(I.shape)
@@ -123,5 +123,5 @@ def coherenceOrientationField(I):
 	return foreground_mask
 
 
-foreground_mask =  coherenceOrientationField(I)
+#foreground_mask =  coherenceOrientationField(I)
 #print(foreground_mask)
