@@ -5,6 +5,8 @@ import numpy as np
 from math import pi
 import matplotlib as mpl
 mpl.use('Agg')
+import scipy as sp
+
 import matplotlib.pyplot as plt
 from Normalisation import *
 from poincare_index import *
@@ -13,10 +15,16 @@ import pandas as pd
 from openpyxl.workbook import Workbook
 
 w1 = 16
-
+I_3 = cv2.imread("101_2.tif");
 #Read the image
-I_2 = cv2.imread("103_3.tif");
-I = cv2.cvtColor(I_2, cv2.COLOR_BGR2GRAY)
+I_2 = cv2.imread("101_2.tif");
+#I = cv2.cvtColor(I_2, cv2.COLOR_BGR2GRAY)
+
+
+I_2 = cv2.cvtColor(I_2, cv2.COLOR_BGR2GRAY)
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
+I = cv2.dilate(I_2,kernel,iterations = 1)
+
 
 G = cv2.GaussianBlur(I,(5,5),0)
 
@@ -65,11 +73,17 @@ for i,j in np.argwhere(block_coherence > 0):
 
 for i,j in np.argwhere(block_coherence < 0):
 	a[i,j] = -1
+
 theta = theta(1)
+print('theta shape', theta.shape)
+print('a shape', a.shape)
+cv2.waitKey(0)	
+
 poincare_image = np.zeros(a.shape)
 for i,j in np.argwhere(a != -1):
+	print('i=', i, 'j=', j)
 	store = np.zeros([3,3])
-	if ((i-2 >= 0) and (i+2 <= a.shape[0]-1) and (j-2 >= 0) and (j+2 <= a.shape[1]-1)):
+	if ((i-1 >= 0) and (i+1 <= a.shape[0]-1) and (j-1 >= 0) and (j+1 <= a.shape[1]-1)):
 		
 		store[0,0] = theta[i-1,j] - theta[i-1, j-1]
 		store[0,1] = theta[i-1, j+1] - theta[i-1, j]
@@ -89,10 +103,25 @@ for i,j in np.argwhere(a != -1):
 
 
 		poincare_image[i,j] = store.sum()/(2*pi)
-
+f = 0
 delta_image = np.zeros(I_2.shape)
 for x,y in np.argwhere(poincare_image == 0.5):
-	I_2[x,y] = [0,0,255]
+	I_3[x,y] = [0,0,255]
+	I_3[x+1, y] = [0,0,255]
+	I_3[x, y+1] = [0,0,255]
+	I_3[x+1, y+1] = [0,0,255]
+	f = f+1
 
-cv2.imshow('i',I_2)
-cv2.waitKey(0)
+
+for x,y in np.argwhere(poincare_image == -0.5):
+	I_3[x,y] = [0,255,0]
+	I_3[x+1, y] = [0,255,0]
+	I_3[x, y+1] = [0,255,0]
+	I_3[x+1, y+1] = [0,255,0]
+	
+
+# cv2.imshow('i',I_3)
+# cv2.waitKey(0)	
+
+cv2.imwrite('singularity_found.png',  I_3)
+print(f)
