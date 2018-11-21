@@ -16,7 +16,7 @@ def Normalisation (test_image):
 	Mean = np.mean(test_image)
 	V_i = np.var(test_image)
 
-	output_image = np.array(test_image.size)
+	output_image = np.zeros(test_image.shape)
 	Size = test_image.shape()
 	
 
