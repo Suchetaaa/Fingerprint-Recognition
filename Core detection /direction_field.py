@@ -1,6 +1,8 @@
 import numpy as np
 import cv2 
 img = cv2.imread('fingerprint_01.png',0)
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import pyplot as plt
 
 
