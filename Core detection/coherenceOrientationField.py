@@ -6,7 +6,9 @@ from math import pi
 w1 = 16
 
 #Read the image
-#I = cv2.imread("dummy.tif");
+I = cv2.imread("/home/neharika/Desktop/DIP/Project/dummy4.tif");
+
+
 
 def coherenceOrientationField(I):
 
@@ -84,19 +86,31 @@ def coherenceOrientationField(I):
 	# 			block_coherence[i][j] = -1
 
 	# ############################
-	connectivity = 8
-	block_coherence = block_coherence.astype(np.int8)
-	output = cv2.connectedComponentsWithStats(block_coherence, connectivity, cv2.CV_8S)
-	labels = output[1]
-	stats = output[2]
-	foreground_label = np.argmax(stats, axis =0)[4]
+	# connectivity = 8
+	# block_coherence = block_coherence.astype(np.int8)
+	# output = cv2.connectedComponentsWithStats(block_coherence, connectivity, cv2.CV_8S)
+	# labels = output[1]
+	# stats = output[2]
+	# foreground_label = np.argmax(stats, axis =0)[4]
 
 	block_coherence_dash = (-1)*np.ones(block_coherence.shape)
 	foreground_mask = np.zeros(I.shape)
 
-	for i,j in np.argwhere(labels == foreground_label):
+	#for i,j in np.argwhere(labels == foreground_label):
+	for i,j in np.argwhere(block_coherence > 0):
 		block_coherence_dash[i,j] = block_coherence[i,j]
 		foreground_mask[i,j] = 1
+
+	kernel_closing = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10,10))
+	foreground_mask = cv2.morphologyEx(foreground_mask, cv2.MORPH_ELLIPSE, kernel_closing)
+	foreground_mask = cv2.morphologyEx(foreground_mask, cv2.MORPH_ELLIPSE, kernel_closing)
+	foreground_mask = cv2.morphologyEx(foreground_mask, cv2.MORPH_ELLIPSE, kernel_closing)
+	foreground_mask = cv2.morphologyEx(foreground_mask, cv2.MORPH_ELLIPSE, kernel_closing)
+	foreground_mask = cv2.morphologyEx(foreground_mask, cv2.MORPH_ELLIPSE, kernel_closing)
+
+	cv2.imshow('foreground_mask', foreground_mask)
+	cv2.waitKey(0)
+
 
 	"""
 
@@ -106,4 +120,8 @@ def coherenceOrientationField(I):
 				block_coherence_dash = block_coherence[i][j]
 	"""			
 
-	return foreground_mask, block_coherence_dash
+	return foreground_mask
+
+
+foreground_mask =  coherenceOrientationField(I)
+#print(foreground_mask)
