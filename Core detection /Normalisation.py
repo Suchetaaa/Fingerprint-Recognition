@@ -2,11 +2,21 @@ import numpy as np
 import scipy as sp
 import math
 
-def Normalisation (test_image, M_0, V_0):
-	Mean = mean.test_image()
-	V_i = test_image.var()
-	
-	output_image = np.matrix(test_image.size)
+#As computed on the database; These are the results for overall normalisation and not block normalisation
+#This is not what is the most optimum but still better than nothing
+# M0 = 74.98999708879379
+# V0 = 2011395.439145634
+
+
+
+def Normalisation (test_image):
+	M0 = 74.98999708879379
+	V0 = 2011395.439145634
+
+	Mean = np.mean(test_image)
+	V_i = np.var(test_image)
+
+	output_image = np.array(test_image.size)
 	Size = test_image.shape()
 	
 
