@@ -35,16 +35,16 @@ def BLPOC(input_image, reg_image_corrected):
 	blpoc_fft_shifted = np.fft.ifftshift(blpoc_fft)
 	blpoc_ifft = np.fft.ifft2(blpoc_fft_shifted)
 	blpoc_ifft = np.absolute(blpoc_ifft)
-	print blpoc_ifft
+	# print blpoc_ifft
 	blpoc_peak_value = np.amax(blpoc_ifft)
 
 	return blpoc_peak_value
 
-if __name__ == '__main__' :
-	input_image = cv2.imread('Input Image.tif', 0)
-	reg_image_corrected = cv2.imread('Registered Image.tif', 0)
-	a = BLPOC(input_image, reg_image_corrected)
-	print a
+# if __name__ == '__main__' :
+# 	input_image = cv2.imread('Input Image.tif', 0)
+# 	reg_image_corrected = cv2.imread('Registered Image.tif', 0)
+# 	a = BLPOC(input_image, reg_image_corrected)
+# 	print a
 
 
 			
