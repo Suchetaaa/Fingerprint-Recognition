@@ -1,5 +1,6 @@
 import numpy as np
 import cv2 
+from PIL import Image
 
 def BLPOC(input_image, reg_image_corrected, k1, k2):
 	l1 = 2*k1 + 1
@@ -38,16 +39,19 @@ def BLPOC(input_image, reg_image_corrected, k1, k2):
 	blpoc_fft_shifted = np.fft.ifftshift(blpoc_fft)
 	blpoc_ifft = np.fft.ifft2(blpoc_fft_shifted)
 	blpoc_ifft = np.absolute(blpoc_ifft)
+	# blpoc_img = Image.fromarray(blpoc_ifft*255)
+	# print blpoc_ifft
+	# blpoc_img.show()
 	# print blpoc_ifft
 	blpoc_peak_value = np.amax(blpoc_ifft)
 
 	return blpoc_peak_value
 
-# if __name__ == '__main__' :
-# 	input_image = cv2.imread('Input Image.tif', 0)
-# 	reg_image_corrected = cv2.imread('Registered Image.tif', 0)
-# 	a = BLPOC(input_image, reg_image_corrected)
-# 	print a
+if __name__ == '__main__' :
+	input_image = cv2.imread('Input Image.tif', 0)
+	reg_image_corrected = cv2.imread('Registered Image.tif', 0)
+	a = BLPOC(input_image, input_image, 150, 150)
+	print a
 
 
 			
