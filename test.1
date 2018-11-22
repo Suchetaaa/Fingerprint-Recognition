@@ -13,11 +13,11 @@ from poincare_index import *
 from direction_field import *
 import pandas as pd
 from openpyxl.workbook import Workbook
-
+from LSE import *
 w1 = 16
-I_3 = cv2.imread("101_2.tif");
+I_3 = cv2.imread("107_7.tif");
 #Read the image
-I_2 = cv2.imread("101_2.tif");
+I_2 = cv2.imread("107_7.tif");
 #I = cv2.cvtColor(I_2, cv2.COLOR_BGR2GRAY)
 
 
@@ -32,6 +32,8 @@ G = cv2.GaussianBlur(I,(5,5),0)
 Gx = cv2.Sobel(G,cv2.CV_64F,1,0,ksize=3)
 Gy = cv2.Sobel(G,cv2.CV_64F,0,1,ksize=3)
 
+
+
 J1 = 2*(np.multiply(Gx, Gy))
 J2 = np.multiply(Gx, Gx) - np.multiply(Gy, Gy)
 J3 = np.multiply(Gx, Gx) + np.multiply(Gy, Gy)
@@ -42,6 +44,12 @@ anisotropy_filter = np.ones((16,16))
 sigma_J1 = cv2.filter2D(J1,-1,anisotropy_filter)
 sigma_J2 = cv2.filter2D(J2,-1,anisotropy_filter)
 sigma_J3 = cv2.filter2D(J3,-1,anisotropy_filter)
+
+anisotropy_filter_0 = np.ones((10,10))
+sigma_J3_0 = cv2.filter2D(J3,-1,anisotropy_filter_0)
+
+cv2.imshow('i',sigma_J3)
+cv2.waitKey(0)	
 
 
 theta_bar = 0.5 * np.arctan(np.divide(sigma_J1, sigma_J2))
@@ -74,14 +82,23 @@ for i,j in np.argwhere(block_coherence > 0):
 for i,j in np.argwhere(block_coherence < 0):
 	a[i,j] = -1
 
+
+cv2.imshow('i', block_coherence)
+cv2.waitKey(0)	
+
+
+cv2.imshow('i', a)
+cv2.waitKey(0)	
+
 theta = theta(1)
+
 print('theta shape', theta.shape)
 print('a shape', a.shape)
 cv2.waitKey(0)	
 
 poincare_image = np.zeros(a.shape)
 for i,j in np.argwhere(a != -1):
-	print('i=', i, 'j=', j)
+	#print('i=', i, 'j=', j)
 	store = np.zeros([3,3])
 	if ((i-1 >= 0) and (i+1 <= a.shape[0]-1) and (j-1 >= 0) and (j+1 <= a.shape[1]-1)):
 		
@@ -96,7 +113,7 @@ for i,j in np.argwhere(a != -1):
 		
 		for x,y in np.argwhere(store > pi/2):
 			store[x,y] = pi - store[x,y]
-			print('1')
+			#print('1')
 
 		for x,y in np.argwhere(store < (-0.5)*pi):
 			store[x,y] = pi + store[x,y]
@@ -105,23 +122,36 @@ for i,j in np.argwhere(a != -1):
 		poincare_image[i,j] = store.sum()/(2*pi)
 f = 0
 delta_image = np.zeros(I_2.shape)
+# for x,y in np.argwhere(poincare_image == 0.5):
+# 	I_3[x,y] = [0,0,255]
+# 	I_3[x+1, y] = [0,0,255]
+# 	I_3[x, y+1] = [0,0,255]
+# 	I_3[x+1, y+1] = [0,0,255]
+print('abcbbcbcbbbbbbbbbbbbbbbbbbbb')
+index_1, index_2 = [0,0]
+max_gradient = 0	
 for x,y in np.argwhere(poincare_image == 0.5):
-	I_3[x,y] = [0,0,255]
-	I_3[x+1, y] = [0,0,255]
-	I_3[x, y+1] = [0,0,255]
-	I_3[x+1, y+1] = [0,0,255]
-	f = f+1
+	if(sigma_J3_0[x,y] > max_gradient):
+		index_1,index_2 = x,y
+		max_gradient = sigma_J3_0[x,y]
 
+# for x,y in np.argwhere(poincare_image == -0.5):
+# 	I_3[x,y] = [0,255,0]
+# 	I_3[x+1, y] = [0,255,0]
+# 	I_3[x, y+1] = [0,255,0]
+# 	I_3[x+1, y+1] = [0,255,0]
 
-for x,y in np.argwhere(poincare_image == -0.5):
-	I_3[x,y] = [0,255,0]
-	I_3[x+1, y] = [0,255,0]
-	I_3[x, y+1] = [0,255,0]
-	I_3[x+1, y+1] = [0,255,0]
+I_3[index_1,index_2] = [0,0,255]
+I_3[index_1+1, index_2] = [0,0,255]
+I_3[index_1, index_2+1] = [0,0,255]
+I_3[index_1+1, index_2+1] = [0,0,255]
+
 	
 
 # cv2.imshow('i',I_3)
 # cv2.waitKey(0)	
+print('index_1 = ', index_1)
+print('index_2 = ', index_2)
+
 
 cv2.imwrite('singularity_found.png',  I_3)
-print(f)
