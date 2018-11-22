@@ -17,7 +17,7 @@ l = 0
 
 # image_names1 = os.listdir('/home/neharika/Desktop/DIP/Project/DB1_B')
 # image_names1.sort()
-# image_names2 = os.listdir('DB2_B/')
+# image_names2 = os.listdir('/home/neharika/Desktop/DIP/Project/DB2_B')
 # image_names1.sort()
 # image_names3 = os.listdir('DB3_B/')
 image_names4 = os.listdir('/home/neharika/Desktop/DIP/Project/DB4_B')
@@ -38,10 +38,12 @@ singularPoint_4 = (-1) * np.ones((80, 2))
 
 	
 # for images in tqdm(image_names2):
-# 	(a, b) = singularPointDetection('/home/neharika/Desktop/DIP/Project/DB2_B' + images)
-# 	singularPoint_2[j,0] = a
-# 	singularPoint_2[j, 1] = b
-# 	j = j+1
+# 	# print(images)
+# 	(a, b) = singularPointDetection('/home/neharika/Desktop/DIP/Project/DB2_B/' + images)
+# 	singularPoint_2[i,0] = a
+# 	singularPoint_2[i, 1] = b
+# 	print((a,b))
+# 	i = i+1
 
 # for images in tqdm(image_names3):
 # 	(a, b) = singularPointDetection('/home/neharika/Desktop/DIP/Project/DB3_B' + images)
@@ -52,8 +54,8 @@ singularPoint_4 = (-1) * np.ones((80, 2))
 for images in tqdm(image_names4):
 	print(images)
 	(a, b) = singularPointDetection('/home/neharika/Desktop/DIP/Project/DB4_B/' + images)
-	singularPoint_1[i,0] = a
-	singularPoint_1[i, 1] = b
+	singularPoint_4[i,0] = a
+	singularPoint_4[i, 1] = b
 	print((a,b))
 	i = i+1
 	
