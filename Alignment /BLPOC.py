@@ -1,19 +1,22 @@
 import numpy as np
 import cv2 
 
-def BLPOC(input_image, reg_image_corrected):
-	k1 = 100
-	k2 = 100
+def BLPOC(input_image, reg_image_corrected, k1, k2):
 	l1 = 2*k1 + 1
 	l2 = 2*k2 + 1
 
+	print input_image.shape
+	print reg_image_corrected.shape
 	fft_input = np.fft.fft2(input_image)
 	fft_shift_input = np.fft.fftshift(fft_input)
 	fft_reg = np.fft.fft2(reg_image_corrected)
 	fft_shift_reg = np.fft.fftshift(fft_reg)
 	rows, cols = fft_input.shape
+	print fft_shift_input.shape
 
 	fft_input_conj = np.matrix.conjugate(fft_shift_input)
+	print fft_shift_reg.shape
+	print fft_input_conj.shape
 	cross_phase_spec = np.divide(np.multiply(fft_shift_reg, fft_input_conj), (np.absolute(np.multiply(fft_shift_reg, fft_input_conj))))
 
 	m1 = rows/2
