@@ -3,21 +3,24 @@ import cv2
 from PIL import Image
 
 def BLPOC(input_image, reg_image_corrected, k1, k2):
+	rows, cols = reg_image_corrected.shape
+	k1 = int(rows*0.7)
+	k2 = int(cols*0.7)
 	l1 = 2*k1 + 1
 	l2 = 2*k2 + 1
 
-	print input_image.shape
-	print reg_image_corrected.shape
+	# print input_image.shape
+	# print reg_image_corrected.shape
 	fft_input = np.fft.fft2(input_image)
 	fft_shift_input = np.fft.fftshift(fft_input)
 	fft_reg = np.fft.fft2(reg_image_corrected)
 	fft_shift_reg = np.fft.fftshift(fft_reg)
 	rows, cols = fft_input.shape
-	print fft_shift_input.shape
+	# print fft_shift_input.shape
 
 	fft_input_conj = np.matrix.conjugate(fft_shift_input)
-	print fft_shift_reg.shape
-	print fft_input_conj.shape
+	# print fft_shift_reg.shape
+	# print fft_input_conj.shape
 	cross_phase_spec = np.divide(np.multiply(fft_shift_reg, fft_input_conj), (np.absolute(np.multiply(fft_shift_reg, fft_input_conj))))
 
 	m1 = rows/2
@@ -32,9 +35,7 @@ def BLPOC(input_image, reg_image_corrected, k1, k2):
 	eff_cols = (right_extreme - left_extreme) + 1
 	blpoc_fft = np.zeros((eff_rows, eff_cols), dtype = complex)
 
-	for x in range(0,eff_rows):
-		for y in range(0,eff_cols):
-			blpoc_fft[x][y] = cross_phase_spec[top_extreme + x, left_extreme + y]
+	blpoc_fft = cross_phase_spec[top_extreme:bottom_extreme, left_extreme:right_extreme]
 
 	blpoc_fft_shifted = np.fft.ifftshift(blpoc_fft)
 	blpoc_ifft = np.fft.ifft2(blpoc_fft_shifted)
@@ -44,6 +45,8 @@ def BLPOC(input_image, reg_image_corrected, k1, k2):
 	# blpoc_img.show()
 	# print blpoc_ifft
 	blpoc_peak_value = np.amax(blpoc_ifft)
+	second_lrg = np.partition(blpoc_ifft.flatten(), -2)[-2]
+	blpoc_peak_value = (blpoc_peak_value + second_lrg)/2
 
 	return blpoc_peak_value
 
