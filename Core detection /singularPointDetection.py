@@ -64,3 +64,4 @@ for images in tqdm(image_names4):
 # np.save('singularPoint_2.npy', singularPoint_2)
 # np.save('singularPoint_3.npy', singularPoint_3)
 np.save('singularPoint_4.npy', singularPoint_4)
+	
