@@ -12,15 +12,15 @@ def match_dir(num_rotations, input_img_path, displaced_reg, input_core_coord, k1
 	best_rot = initial_rot
 	rows,cols = displaced_reg.shape
 	input_img = cv2.imread(input_img_path, 0)
-	print input_img.shape
-	print displaced_reg.shape
+	# print input_img.shape
+	# print displaced_reg.shape
 
 	for x in xrange(0,num_rotations+1) :
 		rot = initial_rot + x 
 		transformation = cv2.getRotationMatrix2D((input_core_coord[0], input_core_coord[1]), rot, 1)
 		rotated_img = cv2.warpAffine(displaced_reg, transformation, (cols, rows))
 		img = Image.fromarray(rotated_img)
-		print rotated_img.shape
+		# print rotated_img.shape
 		# img.show()
 
 		a = BLPOC(input_img, rotated_img, k1, k2)
@@ -28,15 +28,15 @@ def match_dir(num_rotations, input_img_path, displaced_reg, input_core_coord, k1
 		if (max_blpoc < a) :
 			max_blpoc = a
 			best_rot = rot
-			print "Best BLPOC value "
-			print max_blpoc
+			# print "Best BLPOC value "
+			# print max_blpoc
 
 	transformation = cv2.getRotationMatrix2D((input_core_coord[0], input_core_coord[1]), best_rot, 1)
 	final_rot_img = cv2.warpAffine(displaced_reg, transformation, (cols, rows))
-	print final_rot_img.shape
+	# print final_rot_img.shape
 	img = Image.fromarray(final_rot_img)
 	# img.save("Rotated Image.tif")
-	img.show()
+	# img.show()
 	print "direction estimation done"
 	return final_rot_img
 

@@ -9,13 +9,13 @@ def segment(rotated_img, scale):
 	rotated_col_sum = rotated_img.sum(axis = 0)
 	rotated_row_sum = np.reshape(rotated_row_sum, (rotated_row_sum.shape[0], 1))
 	rotated_col_sum = np.reshape(rotated_col_sum, (rotated_col_sum.shape[0], 1))
-	print rotated_col_sum.shape
-	print rotated_row_sum.shape
+	# print rotated_col_sum.shape
+	# print rotated_row_sum.shape
 	rows, cols = rotated_img.shape
 	top_row = 0
-	bottom_row = 0
+	bottom_row = rows
 	left_col = 0
-	right_col = 0
+	right_col = cols
 	for x in xrange(0,rows):
 		if (rotated_row_sum[x][0] > cols*scale) :
 			top_row = x
@@ -42,7 +42,7 @@ def main():
 	new_image = np.zeros((bottom_row-top_row+1, right_col-left_col+1))
 	new_image = rotated_img[top_row:bottom_row, left_col:right_col]
 	new_image = Image.fromarray(new_image)
-	new_image.show()
+	# new_image.show()
 
 if __name__ == '__main__':
 	main()
